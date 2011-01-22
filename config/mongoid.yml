@@ -1,0 +1,13 @@
+defaults: &defaults
+  host: localhost
+
+development:
+  <<: *defaults
+  database: swiss_pairings_development
+
+test:
+  <<: *defaults
+  database: swiss_pairings_test
+
+production:
+  uri: <%= ENV['MONGOHQ_URL'] %>
