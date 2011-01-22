@@ -1,0 +1,2 @@
+default: --drb --strict --tags ~@wip features
+wip: --drb --tags @wip:3 --wip features
