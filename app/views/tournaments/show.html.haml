@@ -2,3 +2,12 @@
   = t.attribute :name
   = t.attribute :win_value
   = t.attribute :draw_value
+
+%ol#players
+  - @tournament.players.each do |player|
+    - next if player.new_record?
+    %li= player.name
+
+= simple_form_for [@tournament, @player] do |f|
+  = f.input :name
+  = f.submit 'Add Player'
