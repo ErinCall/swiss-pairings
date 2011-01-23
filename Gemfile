@@ -12,4 +12,5 @@ group :development, :test do
   gem 'capybara'
   gem 'spork', :git => 'https://github.com/timcharper/spork.git'
   gem 'launchy'
+  gem 'factory_girl_rails'
 end
