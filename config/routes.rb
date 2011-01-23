@@ -3,6 +3,8 @@ SwissPairings::Application.routes.draw do
 
   resources :tournaments do
     resources :players
+
+    post :start, on: :member
   end
 
   root to: 'welcome#index'

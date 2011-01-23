@@ -3,11 +3,26 @@
   = t.attribute :win_value
   = t.attribute :draw_value
 
-%ol#players
-  - @tournament.players.each do |player|
-    - next if player.new_record?
-    %li= player.name
+- if @tournament.current_round == 0
+  %ol#players
+    - @tournament.players.each do |player|
+      - next if player.new_record?
+      %li= player.name
 
-= simple_form_for [@tournament, @player] do |f|
-  = f.input :name
-  = f.submit 'Add Player'
+  = simple_form_for [@tournament, @player] do |f|
+    = f.input :name
+    = f.submit 'Add Player'
+
+  = button_to 'Start Tournament', start_tournament_path(@tournament)
+- else
+  %h2= "Round #{@tournament.current_round} of #{@tournament.total_rounds}"
+  %table#matches
+    %thead
+      %tr
+        %th Player 1
+        %th Player 2
+    %tbody
+      - @tournament.matches.each do |match|
+        %tr
+          %td= match.player_1_name
+          %td= match.player_2_name
