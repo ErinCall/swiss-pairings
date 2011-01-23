@@ -1,0 +1,13 @@
+!!!
+%html
+  %head
+    %title Swiss Pairings
+    = stylesheet_link_tag :all 
+    = csrf_meta_tag 
+  %body
+    - [:notice, :error, :message].each do |key| 
+      - unless flash[key].blank? 
+        %p{class: key}= flash[key]
+    
+    = yield 
+    = javascript_include_tag :defaults 
