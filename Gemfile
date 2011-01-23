@@ -16,5 +16,6 @@ group :development, :test do
   gem 'spork', :git => 'https://github.com/timcharper/spork.git'
   gem 'launchy'
   gem 'factory_girl_rails'
+  gem 'pickle'
   gem 'autotest-rails'
 end
