@@ -8,6 +8,7 @@ gem 'inherited_resources'
 gem 'haml'
 gem 'simple_form'
 gem 'show_for'
+gem 'rpm_contrib'
 
 group :development, :test do
   gem 'rspec-rails'
