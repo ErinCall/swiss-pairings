@@ -12,6 +12,11 @@ class Tournament
 
   validates_presence_of :name
 
+  def calculate_total_rounds
+    self.total_rounds = Math.log2(players.count).ceil
+    save
+  end
+
   def generate_matches
     inc(:current_round, 1)
 

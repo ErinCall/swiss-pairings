@@ -7,9 +7,7 @@ class TournamentsController < InheritedResources::Base
 
   def start
     if resource.players.count > 1
-      @tournament.total_rounds = Math.log2(@tournament.players.count).ceil
-      @tournament.save
-
+      @tournament.calculate_total_rounds if @tournament.current_round == 0
       @tournament.generate_matches
     else
       flash[:error] = "Can't start a tournament with less than 2 players"

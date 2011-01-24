@@ -9,6 +9,18 @@ describe Tournament do
     end
   end
 
+  describe '#calculate_total_rounds' do
+    subject { Factory.create(:tournament) }
+
+    it 'should use the ceiling of the binary log to determine the number of rounds needed' do
+      5.times.map { Factory.create(:player, tournament: subject) }
+
+      subject.calculate_total_rounds
+
+      subject.total_rounds.should == 3
+    end
+  end
+
   describe '#generate_matches' do
     context 'in the first round' do
       subject { Factory.create(:tournament) }
