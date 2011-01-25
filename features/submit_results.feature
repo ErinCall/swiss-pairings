@@ -4,14 +4,17 @@ Feature: submit results
   So I can determine the standings
 
   Scenario: submitting results
-    Given a tournament exists with current_round: 1
+    Given a tournament exists with current_round: 1, total_rounds: 2
     And the following players are signed up for the tournament
       | name  |
       | Drew  |
       | Mark  |
+      | Ben   |
+      | Scott |
     And the matches for round 1 are
       | player 1 | player 2 |
       | Drew     | Mark     |
+      | Ben      | Scott    |
     When I am on the tournament's page
     And I fill in "Drew" with "2"
     And I fill in "Mark" with "1"

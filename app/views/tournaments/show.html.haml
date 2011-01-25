@@ -28,3 +28,6 @@
         - else
           %div= match.player_1_name
           %div= match.player_2_name
+
+  - if @tournament.unfinished_matches.count == 0 && @tournament.current_round < @tournament.total_rounds
+    = button_to 'Start Next Round', start_round_tournament_path(@tournament)

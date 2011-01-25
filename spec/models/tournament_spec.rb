@@ -22,23 +22,25 @@ describe Tournament do
   end
 
   describe '#generate_matches' do
-    context 'in the first round' do
-      subject { Factory.create(:tournament) }
-      let(:players) { 4.times.map { Factory.create(:player, tournament: subject) } }
+    subject { Factory.create(:tournament, current_round: 1) }
+    it 'should match players by match score' do
+      winners = 2.times.map { mock_model(Player, match_score: 3) }
+      losers = 2.times.map { mock_model(Player, match_score: 0) }
+      subject.should_receive(:players).and_return(winners + losers)
 
-      before(:each) do
-        subject.players.should_receive(:sort_by).and_return(players)
-        subject.generate_matches
-      end
+      subject.generate_matches
 
-      it 'should randomly assign matches' do
-        should have_matches_for_round(1,
-          [players[0], players[1]],
-          [players[2], players[3]]
-        )
-      end
+      should have_matches_for_round(2, winners, losers)
+    end
+  end
 
-      its(:current_round) { should == 1 }
+  describe '#unfinished_matches' do
+    it 'should return the matches for the current round that have not had results entered' do
+      tournament = Factory.create(:tournament, current_round: 1)
+      unfinished_match = tournament.matches.create(round: 1)
+      tournament.matches.create(winner: 1, round: 1)
+
+      tournament.unfinished_matches.to_a.should == [unfinished_match]
     end
   end
 
@@ -49,6 +51,22 @@ describe Tournament do
       tournament.matches.create(winner: 1, round: 1)
 
       tournament.current_matches.to_a.should == [current_match]
+    end
+  end
+
+  describe '#matches_for_player' do
+    it 'should search its matches for ones played by the given player' do
+      tournament = Factory.create(:tournament)
+      expected_matches = [
+        mock_model(Match, player_1_id: 'foo'),
+        mock_model(Match, player_1_id: 'bar', player_2_id: 'foo'),
+      ]
+      tournament.should_receive(:matches).and_return([
+        *expected_matches,
+        mock_model(Match, player_1_id: 'bar', player_2_id: 'baz')
+      ])
+
+      tournament.matches_for_player(mock_model(Player, id: 'foo')).should == expected_matches
     end
   end
 end

@@ -28,4 +28,13 @@ class Match
   def player_2_name
     player_2_id ? tournament.players.find(player_2_id).name : 'BYE'
   end
+
+  def winner?(player)
+    (winner == 1 && player_1_id == player.id) ||
+    (winner == 2 && player_2_id == player.id)
+  end
+
+  def draw?
+    winner == -1
+  end
 end
