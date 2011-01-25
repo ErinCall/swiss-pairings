@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe TournamentsController do
-  describe '#start' do
+  describe '#start_round' do
     context 'when starting a tournament' do
       let(:tournament) { mock_model(Tournament, id: 'foo', current_round: 0) }
       before(:each) { Tournament.stub(:find).with('foo').and_return(tournament) }
@@ -10,12 +10,12 @@ describe TournamentsController do
         before(:each) { tournament.stub_chain(:players, :count).and_return(0) }
 
         it 'should display an error if there are not enough players' do
-          post :start, id: 'foo'
+          post :start_round, id: 'foo'
           flash[:error].should == "Can't start a tournament with less than 2 players"
         end
 
         it 'should redirect to the tournament page' do
-          post :start, id: 'foo'
+          post :start_round, id: 'foo'
           response.should redirect_to('/tournaments/foo')
         end
       end
@@ -30,13 +30,13 @@ describe TournamentsController do
         it 'should calculate the total number of rounds' do
           tournament.should_receive(:calculate_total_rounds)
 
-          post :start, id: 'foo'
+          post :start_round, id: 'foo'
         end
 
         it 'should generate the matches for the round' do
           tournament.should_receive(:generate_matches)
 
-          post :start, id: 'foo'
+          post :start_round, id: 'foo'
         end
       end
     end

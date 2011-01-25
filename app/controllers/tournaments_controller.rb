@@ -5,7 +5,7 @@ class TournamentsController < InheritedResources::Base
     show!
   end
 
-  def start
+  def start_round
     if resource.players.count > 1
       @tournament.calculate_total_rounds if @tournament.current_round == 0
       @tournament.generate_matches

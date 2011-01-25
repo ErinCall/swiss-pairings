@@ -13,7 +13,7 @@
     = f.input :name
     = f.submit 'Add Player'
 
-  = button_to 'Start Tournament', start_tournament_path(@tournament)
+  = button_to 'Start Tournament', start_round_tournament_path(@tournament)
 - else
   %h2= "Round #{@tournament.current_round} of #{@tournament.total_rounds}"
   #matches
