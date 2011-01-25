@@ -37,8 +37,18 @@ describe Tournament do
           [players[2], players[3]]
         )
       end
-      
+
       its(:current_round) { should == 1 }
+    end
+  end
+
+  describe '#current_matches' do
+    it 'should return the matches for the current round that have not had results entered' do
+      tournament = Factory.create(:tournament, current_round: 2)
+      current_match = tournament.matches.create(round: 2)
+      tournament.matches.create(winner: 1, round: 1)
+
+      tournament.current_matches.to_a.should == [current_match]
     end
   end
 end

@@ -24,4 +24,8 @@ class Tournament
       matches.create(round: current_round, player_1_id: slice[0].id, player_2_id: slice[1] && slice[1].id)
     end
   end
+
+  def current_matches
+    matches.where(round: current_round)
+  end
 end

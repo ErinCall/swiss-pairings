@@ -17,7 +17,7 @@
 - else
   %h2= "Round #{@tournament.current_round} of #{@tournament.total_rounds}"
   #matches
-    - @tournament.matches.each do |match|
+    - @tournament.current_matches.each do |match|
       %div
         - if match.player_2_id
           = simple_form_for [@tournament, match] do |f|
