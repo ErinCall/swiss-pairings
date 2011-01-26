@@ -32,6 +32,25 @@ describe Tournament do
 
       should have_matches_for_round(2, winners, losers)
     end
+
+    it 'should give a bye if there is an uneven number of players' do
+      subject.should_receive(:players).and_return(3.times.map { mock_model(Player, match_score: 0) })
+
+      subject.generate_matches
+
+      subject.current_matches[1].player_2_id.should be_nil
+    end
+
+    it 'should move players up from a lower group if there is an odd number in a group' do
+      winner = mock_model(Player, match_score: 3)
+      drawers = 2.times.map { mock_model(Player, match_score: 1) }
+      loser = mock_model(Player, match_score: 0)
+      subject.should_receive(:players).and_return([winner, *drawers, loser])
+
+      subject.generate_matches
+
+      subject.current_matches.count.should == 2
+    end
   end
 
   describe '#unfinished_matches' do

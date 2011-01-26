@@ -21,8 +21,13 @@ class Tournament
     inc(:current_round, 1)
 
     groups = players.group_by { |p| p.match_score }
+    scores = groups.keys.sort.reverse
 
-    groups.keys.sort.each do |group|
+    scores.each_with_index do |group, index|
+      if groups[group].length.odd? && index < scores.length - 1
+        groups[group] << groups[scores[index + 1]].delete_at(rand(groups[scores[index + 1]].length))
+      end
+
       groups[group].sort_by { rand }.each_slice(2) do |slice|
         matches.create(round: current_round, player_1_id: slice[0].id, player_2_id: slice[1] && slice[1].id)
       end
