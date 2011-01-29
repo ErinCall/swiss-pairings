@@ -12,37 +12,35 @@ class Tournament
 
   validates_presence_of :name
 
+  delegate :generate_matches, to: :swiss_pairer
+
   def calculate_total_rounds
     self.total_rounds = Math.log2(players.count).ceil
     save
-  end
-
-  def generate_matches
-    inc(:current_round, 1)
-
-    groups = players.group_by { |p| p.match_score }
-    scores = groups.keys.sort.reverse
-
-    scores.each_with_index do |group, index|
-      if groups[group].length.odd? && index < scores.length - 1
-        groups[group] << groups[scores[index + 1]].delete_at(rand(groups[scores[index + 1]].length))
-      end
-
-      groups[group].sort_by { rand }.each_slice(2) do |slice|
-        matches.create(round: current_round, player_1_id: slice[0].id, player_2_id: slice[1] && slice[1].id)
-      end
-    end
-  end
-
-  def unfinished_matches
-    matches.where(winner: nil, round: current_round)
   end
 
   def current_matches
     matches.where(round: current_round)
   end
 
+  def unfinished_matches
+    current_matches.where(winner: nil)
+  end
+
   def matches_for_player(player)
     matches.select { |m| m.player_1_id == player.id || m.player_2_id == player.id }
   end
+
+  def create_match(player_1, player_2)
+    matches.create(round: current_round, player_1_id: player_1.id, player_2_id: player_2 && player_2.id)
+  end
+
+  def next_round
+    inc(:current_round, 1)
+  end
+
+  private
+    def swiss_pairer
+      SwissPairer.new(self)
+    end
 end

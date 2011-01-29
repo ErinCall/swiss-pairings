@@ -18,6 +18,9 @@ describe TournamentsController do
           post :start_round, id: 'foo'
           response.should redirect_to('/tournaments/foo')
         end
+         it 'should not increment the round' do
+           tournament.should_not_receive(:next_round)
+         end
       end
 
       context 'and there are enough players' do
@@ -25,10 +28,17 @@ describe TournamentsController do
           tournament.stub_chain(:players, :count).and_return(5)
           tournament.stub(:calculate_total_rounds)
           tournament.stub(:generate_matches)
+          tournament.stub(:next_round)
         end
 
         it 'should calculate the total number of rounds' do
           tournament.should_receive(:calculate_total_rounds)
+
+          post :start_round, id: 'foo'
+        end
+
+        it 'should increment the current round' do
+          tournament.should_receive(:next_round)
 
           post :start_round, id: 'foo'
         end
