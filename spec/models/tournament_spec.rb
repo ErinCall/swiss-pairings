@@ -9,6 +9,20 @@ describe Tournament do
     end
   end
 
+  describe '#started?' do
+    it 'should return false if the current round is 0' do
+      tournament = Factory.create(:tournament, current_round: 0)
+
+      tournament.should_not be_started
+    end
+
+    it 'should return false if the current round is greater than 0' do
+      tournament = Factory.create(:tournament, current_round: 1)
+
+      tournament.should be_started
+    end
+  end
+
   describe '#calculate_total_rounds' do
     subject { Factory.create(:tournament) }
 

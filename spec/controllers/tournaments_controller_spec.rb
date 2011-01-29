@@ -3,7 +3,7 @@ require 'spec_helper'
 describe TournamentsController do
   describe '#start_round' do
     context 'when starting a tournament' do
-      let(:tournament) { mock_model(Tournament, id: 'foo', current_round: 0) }
+      let(:tournament) { mock_model(Tournament, id: 'foo', started?: false) }
       before(:each) { Tournament.stub(:find).with('foo').and_return(tournament) }
 
       context 'and there are too few players' do

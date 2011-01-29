@@ -14,6 +14,10 @@ class Tournament
 
   delegate :generate_matches, to: :swiss_pairer
 
+  def started?
+    return current_round > 0
+  end
+
   def calculate_total_rounds
     self.total_rounds = Math.log2(players.count).ceil
     save
