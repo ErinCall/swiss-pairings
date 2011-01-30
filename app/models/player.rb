@@ -20,4 +20,10 @@ class Player
 
     score
   end
+
+  def played?(other_player)
+    !! tournament.matches_for_player(self).find do |m|
+      m.player_1_id == other_player.id || m.player_2_id == other_player.id
+    end
+  end
 end
