@@ -28,6 +28,64 @@ describe Match do
     end
   end
 
+  describe '#winner?' do
+    let(:player) { Factory.create(:player) }
+    subject { match = Factory.create(:match, tournament: player.tournament, player_1: player) }
+
+    it 'should return true if the player won the match' do
+      subject.update_attributes(player_1_wins: 1)
+
+      subject.winner?(player).should be_true
+    end
+
+    it 'should return false if the player lost the match' do
+      subject.update_attributes(player_2_wins: 1)
+
+      subject.winner?(player).should be_false
+    end
+
+    it 'should return false if the player drew the match' do
+      subject.update_attributes(draws: 1)
+
+      subject.winner?(player).should be_false
+    end
+
+    it 'should return true if the player got a bye' do
+      subject.update_attributes(player_2_id: nil)
+
+      subject.winner?(player).should be_true
+    end
+  end
+
+  describe '#draw?' do
+    let(:player) { Factory.create(:player) }
+    subject { match = Factory.create(:match, tournament: player.tournament, player_1: player) }
+
+    it 'should return false if the player 1 won the match' do
+      subject.update_attributes(player_1_wins: 1)
+
+      subject.should_not be_draw
+    end
+
+    it 'should return false if the player 2 won the match' do
+      subject.update_attributes(player_2_wins: 1)
+
+      subject.should_not be_draw
+    end
+
+    it 'should return true if the players drew the match' do
+      subject.update_attributes(draws: 1)
+
+      subject.should be_draw
+    end
+
+    it 'should return false if it was a bye' do
+      subject.update_attributes(player_2_id: nil)
+
+      subject.should_not be_draw
+    end
+  end
+
   describe 'before save' do
     subject { Factory.create(:match) }
 
@@ -47,6 +105,18 @@ describe Match do
       subject.update_attributes(player_1_wins: 0, player_2_wins: 2)
 
       subject.winner.should == 2
+    end
+
+    it 'should mark it a win if it is a bye' do
+      subject.update_attributes(player_2_id: nil)
+
+      subject.winner.should == 1
+    end
+
+    it 'should give player 1 2 game wins if it is a bye' do
+      subject.update_attributes(player_2_id: nil)
+
+      subject.player_1_wins.should == 2
     end
   end
 end
