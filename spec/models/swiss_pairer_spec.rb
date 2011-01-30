@@ -93,5 +93,22 @@ describe SwissPairer do
 
       subject.generate_matches
     end
+
+    it 'should be able to swap byes' do
+      winner = Factory.create(:player, tournament: tournament)
+      loser = Factory.create(:player, tournament: tournament)
+      drawers = 2.times.map { Factory.create(:player, tournament: tournament) }
+      bye = Factory.create(:player, tournament: tournament)
+
+      Factory.create(:match, tournament: tournament, player_1: winner, player_2: loser, player_1_wins: 1)
+      Factory.create(:match, tournament: tournament, player_1: drawers[0], player_2: drawers[1], draws: 1)
+      Factory.create(:match, tournament: tournament, player_1: bye, player_2: nil)
+
+      tournament.should_receive(:create_match).with(winner, bye)
+      tournament.should_receive(:create_match).with(drawers[0], loser)
+      tournament.should_receive(:create_match).with(drawers[1], nil)
+
+      subject.generate_matches
+    end
   end
 end

@@ -52,7 +52,7 @@ class SwissPairer
     end
 
     def find_illegal_match(matches)
-      matches.find { |match| match[0].played? match[1] }
+      matches.find { |match| played?(match[0], match[1]) }
     end
 
     def swap_with_group(match, swappable_matches)
@@ -66,14 +66,18 @@ class SwissPairer
     def swap_if_possible(m1, m2)
       return nil if m1 == m2
 
-      if ! m1[0].played?(m2[0]) && ! m1[1].played?(m2[1])
+      if !played?(m1[0], m2[0]) && !played?(m1[1], m2[1])
         m1[1], m2[0] = m2[0], m1[1]
         true
-      elsif ! m1[0].played?(m2[1]) && ! m1[1].played?(m2[0])
+      elsif !played?(m1[0], m2[1]) && !played?(m1[1], m2[0])
         m1[1], m2[1] = m2[1], m1[1]
         true
       else
         nil
       end
+    end
+
+    def played?(player_1, player_2)
+      player_1 && player_2 && player_1.played?(player_2)
     end
 end
