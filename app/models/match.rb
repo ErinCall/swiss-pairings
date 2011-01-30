@@ -21,12 +21,28 @@ class Match
     end
   end
 
+  def player_1
+    tournament.players.find(player_1_id)
+  end
+
+  def player_1=(player)
+    self.player_1_id = player.id
+  end
+
   def player_1_name
-    tournament.players.find(player_1_id).name
+    player_1.name
+  end
+
+  def player_2
+    player_2_id && tournament.players.find(player_2_id)
+  end
+
+  def player_2=(player)
+    self.player_2_id = player && player.id
   end
 
   def player_2_name
-    player_2_id ? tournament.players.find(player_2_id).name : 'BYE'
+    (p = player_2) ? p.name : 'BYE'
   end
 
   def winner?(player)

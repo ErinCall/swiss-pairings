@@ -41,18 +41,18 @@ describe Tournament do
       players = 5.times.map { Factory.create(:player) }
       unfinished_match = tournament.matches.create(
         round: 1,
-        player_1_id: players[0].id,
-        player_2_id: players[1].id
+        player_1: players[0],
+        player_2: players[1]
       )
       tournament.matches.create(
         winner: 1,
         round: 1,
-        player_1_id: players[2].id,
-        player_2_id: players[3].id
+        player_1: players[2],
+        player_2: players[3]
       )
       tournament.matches.create(
         round: 1,
-        player_1_id: players[4].id
+        player_1: players[4]
       )
 
       tournament.unfinished_matches.to_a.should == [unfinished_match]
@@ -72,16 +72,14 @@ describe Tournament do
   describe '#matches_for_player' do
     it 'should search its matches for ones played by the given player' do
       tournament = Factory.create(:tournament)
+      player = Factory.create(:player, tournament: tournament)
       expected_matches = [
-        mock_model(Match, player_1_id: 'foo'),
-        mock_model(Match, player_1_id: 'bar', player_2_id: 'foo'),
+        Factory.create(:match, tournament: tournament, player_1: player),
+        Factory.create(:match, tournament: tournament, player_2: player)
       ]
-      tournament.should_receive(:matches).and_return([
-        *expected_matches,
-        mock_model(Match, player_1_id: 'bar', player_2_id: 'baz')
-      ])
+      Factory.create(:match, tournament: tournament)
 
-      tournament.matches_for_player(mock_model(Player, id: 'foo')).should == expected_matches
+      tournament.matches_for_player(player).should == expected_matches
     end
   end
 
@@ -93,8 +91,8 @@ describe Tournament do
 
       match = tournament.create_match(*players)
 
-      match.player_1_id.should == players[0].id
-      match.player_2_id.should == players[1].id
+      match.player_1.should == players[0]
+      match.player_2.should == players[1]
       match.round.should == 1
     end
 
@@ -103,8 +101,8 @@ describe Tournament do
 
       match = tournament.create_match(player, nil)
 
-      match.player_1_id.should == player.id
-      match.player_2_id.should be_nil
+      match.player_1.should == player
+      match.player_2.should be_nil
     end
   end
 
