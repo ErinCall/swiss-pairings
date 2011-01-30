@@ -2,8 +2,12 @@
 %html
   %head
     %title Swiss Pairings
-    = stylesheet_link_tag :all 
-    = csrf_meta_tag 
+    = csrf_meta_tag
+    = stylesheet_link_tag 'compiled/screen', :media => 'screen, projection'
+    = stylesheet_link_tag 'compiled/print', :media => 'print'
+    /[if IE]
+      = stylesheet_link_tag 'compiled/ie', :media => 'screen, projection'
+
   %body
     - [:notice, :error, :message].each do |key| 
       - unless flash[key].blank? 

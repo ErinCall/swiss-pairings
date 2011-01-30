@@ -9,6 +9,9 @@ gem 'haml'
 gem 'simple_form'
 gem 'show_for'
 gem 'rpm_contrib'
+gem 'compass'
+gem 'compass-960-plugin', require: 'ninesixty'
+gem 'hassle', git: 'https://github.com/koppen/hassle.git'
 
 group :development, :test do
   gem 'rspec-rails'

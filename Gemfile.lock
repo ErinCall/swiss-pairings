@@ -1,4 +1,12 @@
 GIT
+  remote: https://github.com/koppen/hassle.git
+  revision: 97512c65f4c6fa34a4d4e284c416e8e6ebecbd44
+  specs:
+    hassle (0.0.1)
+      haml
+      rack
+
+GIT
   remote: https://github.com/timcharper/spork.git
   revision: 0a437df352014221592c7dce5a95682268016aa5
   specs:
@@ -54,6 +62,10 @@ GEM
     celerity (0.8.7)
     childprocess (0.1.6)
       ffi (~> 0.6.3)
+    compass (0.10.6)
+      haml (>= 3.0.4)
+    compass-960-plugin (0.10.0)
+      compass (>= 0.10.0)
     configuration (1.2.0)
     cucumber (0.10.0)
       builder (>= 2.1.2)
@@ -173,10 +185,13 @@ DEPENDENCIES
   autotest-rails
   bson_ext (~> 1.2)
   capybara
+  compass
+  compass-960-plugin
   cucumber-rails
   devise
   factory_girl_rails
   haml
+  hassle!
   inherited_resources
   launchy
   mongoid (= 2.0.0.rc.6)
