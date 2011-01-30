@@ -28,7 +28,7 @@ class Tournament
   end
 
   def unfinished_matches
-    current_matches.where(winner: nil)
+    current_matches.where(winner: nil, :player_2_id.ne => nil)
   end
 
   def matches_for_player(player)

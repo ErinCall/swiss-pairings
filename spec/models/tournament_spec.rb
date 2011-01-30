@@ -38,8 +38,22 @@ describe Tournament do
   describe '#unfinished_matches' do
     it 'should return the matches for the current round that have not had results entered' do
       tournament = Factory.create(:tournament, current_round: 1)
-      unfinished_match = tournament.matches.create(round: 1)
-      tournament.matches.create(winner: 1, round: 1)
+      players = 5.times.map { Factory.create(:player) }
+      unfinished_match = tournament.matches.create(
+        round: 1,
+        player_1_id: players[0].id,
+        player_2_id: players[1].id
+      )
+      tournament.matches.create(
+        winner: 1,
+        round: 1,
+        player_1_id: players[2].id,
+        player_2_id: players[3].id
+      )
+      tournament.matches.create(
+        round: 1,
+        player_1_id: players[4].id
+      )
 
       tournament.unfinished_matches.to_a.should == [unfinished_match]
     end
