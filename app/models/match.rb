@@ -14,15 +14,10 @@ class Match
   before_save do
     return if new_record?
 
-    if bye?
-      self.winner = 1
-      self.player_1_wins = 2
-    else
-      self.winner = case player_1_wins <=> player_2_wins
-        when -1 then 2
-        when 0 then -1
-        else 1
-      end
+    self.winner = case player_1_wins <=> player_2_wins
+      when -1 then 2
+      when 0 then -1
+      else 1
     end
   end
 
@@ -51,12 +46,13 @@ class Match
   end
 
   def winner?(player)
+    bye? ||
     (winner == 1 && player_1_id == player.id) ||
     (winner == 2 && player_2_id == player.id)
   end
 
   def draw?
-    winner == -1
+    ! bye? && winner == -1
   end
 
   def bye?

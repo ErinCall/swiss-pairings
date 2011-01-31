@@ -106,17 +106,5 @@ describe Match do
 
       subject.winner.should == 2
     end
-
-    it 'should mark it a win if it is a bye' do
-      subject.update_attributes(player_2_id: nil)
-
-      subject.winner.should == 1
-    end
-
-    it 'should give player 1 2 game wins if it is a bye' do
-      subject.update_attributes(player_2_id: nil)
-
-      subject.player_1_wins.should == 2
-    end
   end
 end
