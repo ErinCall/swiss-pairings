@@ -1,0 +1,111 @@
+body {
+  background-color: $page-background;
+  font-family: "ff-nuvo-sc-web-pro-1","ff-nuvo-sc-web-pro-2",sans-serif;
+  line-height: 1.5;
+}
+
+#wrap {
+  @include border-radius;
+  @include box-shadow;
+  @include clearfix;
+
+  margin-top: 20px;
+  margin-bottom: 20px;
+  background-color: $wrap-background;
+}
+
+#header h1 {
+  text-align: center;
+  margin-top: 10px;
+  font-size: 32pt;
+}
+
+#content > div {
+  padding-bottom: 20px;
+}
+
+.error, .warning, .notice { 
+  @include box-shadow;
+
+  text-align: center;
+  margin-bottom: 15px;
+}
+
+.error {
+  border: 1px solid darken($loss-color, 20%);
+  background-color: $loss-color;
+}
+
+.warning {
+  border: 1px solid darken($draw-color, 20%);
+  background-color: $draw-color;
+}
+
+.notice {
+  border: 1px solid darken($win-color, 20%);
+  background-color: $win-color;
+}
+
+h1, h2 {
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+h1 {
+  font-size: 20pt;
+}
+
+h2 {
+  font-size: 16pt;
+}
+
+input[type=submit] {
+  @include border-radius;
+  @include box-shadow;
+
+  border: 1px solid $page-background;
+  background-color: lighten($page-background, 20%);
+  font-family: "ff-nuvo-sc-web-pro-1","ff-nuvo-sc-web-pro-2",sans-serif;
+  font-weight: bold;
+
+  &:hover {
+    border-color: darken($win-color, 20%);
+    background-color: $win-color;
+  }
+}
+
+
+dt {
+  font-weight: bold;
+}
+
+ol {
+  margin-bottom: 15px;
+
+  li {
+    list-style: decimal inside;
+  }
+}
+
+.match {
+  @include clearfix;
+  margin-bottom: 10px;
+}
+
+.winner {
+  background-color: $win-color;
+}
+
+.loser {
+  background-color: $loss-color;
+}
+
+.draw {
+  background-color: $draw-color;
+}
+
+#footer {
+  text-align: center;
+  font-size: 8pt;
+  margin-bottom: 10px;
+}

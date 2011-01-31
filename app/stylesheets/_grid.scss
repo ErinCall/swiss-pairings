@@ -1,0 +1,63 @@
+html, body {
+  height: 100%;
+}
+
+#wrap {
+  @include grid-system(12);
+}
+
+#header, #content, #footer {
+  @include grid(12, 12);
+}
+
+h1.page-title {
+  @include grid(12, 12);
+  @include alpha;
+}
+
+#content > div {
+  @include grid(12, 12);
+  @include alpha;
+}
+
+h1, h2 {
+  @include grid(12, 12);
+  @include alpha;
+}
+
+form > div {
+  @include grid(12, 12);
+  @include alpha;
+}
+
+label {
+  @include grid(2, 12);
+  @include alpha;
+}
+
+input[type=text], input[type=number] {
+  @include grid(4, 12);
+}
+
+dl {
+  @include grid(12, 12);
+  @include alpha;
+}
+
+dt {
+  @include grid(3, 12);
+  @include alpha;
+}
+
+dd {
+  @include grid(5, 12);
+}
+
+.match label {
+  @include grid(5, 12);
+  @include alpha;
+}
+
+.match input[type=number] {
+  @include grid(1, 12);
+}

@@ -1,5 +1,8 @@
-= simple_form_for @tournament do |f|
-  = f.input :name
-  = f.input :win_value, as: :float
-  = f.input :draw_value, as: :float
-  = f.submit
+- page_title 'New Tournament'
+
+%div
+  = simple_form_for @tournament do |f|
+    = f.input :name
+    = f.input :win_value, as: :float
+    = f.input :draw_value, as: :float
+    .submit= f.submit

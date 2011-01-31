@@ -1,33 +1,40 @@
+- page_title @tournament.name
+
+%h2 Tournament Info
 = show_for @tournament do |t|
-  = t.attribute :name
   = t.attribute :win_value
   = t.attribute :draw_value
 
 - if @tournament.current_round == 0
-  %ol#players
-    - @tournament.players.each do |player|
-      - next if player.new_record?
-      %li= player.name
+  %h2 Register Players
+  %div
+    %ol#players
+      - @tournament.players.each do |player|
+        - next if player.new_record?
+        %li= player.name
 
-  = simple_form_for [@tournament, @player] do |f|
-    = f.input :name
-    = f.submit 'Add Player'
+    = simple_form_for [@tournament, @player] do |f|
+      = f.input :name
+      %div= f.submit 'Add Player'
 
   = button_to 'Start Tournament', start_round_tournament_path(@tournament)
 - else
   %h2= "Round #{@tournament.current_round} of #{@tournament.total_rounds}"
   #matches
     - @tournament.current_matches.each do |match|
-      %div
+      .match
         - if match.player_2_id
           = simple_form_for [@tournament, match] do |f|
-            = f.input :player_1_wins, as: :integer, label: match.player_1_name, wrapper_html: {class: result_class(match, 1)}
-            = f.input :player_2_wins, as: :integer, label: match.player_2_name, wrapper_html: {class: result_class(match, 2)}
-            = f.input :draws, as: :integer
-            = f.submit 'Submit Results'
+            = f.input :player_1_wins, as: :integer, label: h(match.player_1_name), wrapper_html: {class: [result_class(match, 1), 'player_1']}
+            = f.input :player_2_wins, as: :integer, label: h(match.player_2_name), wrapper_html: {class: [result_class(match, 2), 'player_2']}
+            = f.input :draws, as: :integer, wrapper_html: {class: 'draws'}
+            .submit
+              = f.submit 'Submit Results'
         - else
-          %div= match.player_1_name
-          %div= match.player_2_name
+          .player_1.winner
+            %span= match.player_1_name
+          .bye
+            %span= match.player_2_name
 
   - if @tournament.unfinished_matches.count == 0 && @tournament.current_round < @tournament.total_rounds
     = button_to 'Start Next Round', start_round_tournament_path(@tournament)
