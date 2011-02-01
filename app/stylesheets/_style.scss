@@ -87,11 +87,6 @@ ol {
   }
 }
 
-.match {
-  @include clearfix;
-  margin-bottom: 10px;
-}
-
 .winner {
   background-color: $win-color;
 }
@@ -108,4 +103,14 @@ ol {
   text-align: center;
   font-size: 8pt;
   margin-bottom: 10px;
+}
+
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
 }

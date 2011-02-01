@@ -53,11 +53,41 @@ dd {
   @include grid(5, 12);
 }
 
-.match label {
-  @include grid(5, 12);
+.match {
+  @include grid(12, 12);
   @include alpha;
-}
 
-.match input[type=number] {
-  @include grid(1, 12);
+  .player_1, .player_2, .bye {
+    @include grid(4, 12);
+
+    label {
+      @include grid(3, 12);
+      @include alpha;
+    }
+
+  }
+
+  .player_1 {
+    @include alpha;
+  }
+
+  .draws {
+    @include grid(2, 12);
+
+    label {
+      @include grid(1, 12);
+      @include alpha;
+    }
+  }
+
+  input[type=number] {
+    float: left;
+    margin-right: 10px;
+    width: 40px;
+  }
+
+  .submit {
+    @include grid(2, 12);
+    @include omega;
+  }
 }
