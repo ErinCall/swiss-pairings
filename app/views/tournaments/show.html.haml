@@ -5,13 +5,11 @@
   = t.attribute :win_value
   = t.attribute :draw_value
 
-- if @tournament.current_round == 0
+- if ! @tournament.started?
   %h2 Register Players
   %div
     %ol#players
-      - @tournament.players.each do |player|
-        - next if player.new_record?
-        %li= player.name
+      = render @tournament.players[0..-2]
 
     = simple_form_for [@tournament, @player] do |f|
       = f.input :name
