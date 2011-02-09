@@ -17,7 +17,7 @@ group :development, :test do
   gem 'rspec-rails'
   gem 'cucumber-rails'
   gem 'capybara'
-  gem 'spork', git: 'https://github.com/timcharper/spork.git'
+  gem 'spork', '0.9.0.rc3'
   gem 'launchy'
   gem 'factory_girl_rails'
   gem 'pickle'
