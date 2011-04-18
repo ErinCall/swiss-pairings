@@ -22,4 +22,5 @@ group :development, :test do
   gem 'factory_girl_rails'
   gem 'pickle'
   gem 'autotest-rails'
+  gem 'database_cleaner'
 end
