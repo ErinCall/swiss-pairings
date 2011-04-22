@@ -18,23 +18,23 @@ class SwissPairer
       groups = @tournament.players.group_by { |p| p.match_score }
       scores = groups.keys.sort.reverse
 
-      scores.each_with_index do |group, index|
-        if groups[group].length.odd? && index < scores.length - 1
-          groups[group] << promote_random_player_from_group(groups[scores[index + 1]])
+      scores.each_with_index do |score, index|
+        if groups[score].length.odd? && index < scores.length - 1
+          groups[score] << promote_random_player_from_group(groups[scores[index + 1]])
         end
 
-        groups[group].sort_by { rand }.each_slice(2) do |pair|
-          @matches[group] ||= []
-          @matches[group] << pair
+        groups[score].sort_by { rand }.each_slice(2) do |pair|
+          @matches[score] ||= []
+          @matches[score] << pair
         end
       end
     end
 
     def fix_illegal_matches
       scores = @matches.keys.sort.reverse
-      scores.each_with_index do |group, index|
-        while illegal_match = find_illegal_match(@matches[group])
-          raise UnmatchableRound unless swap_with_group(illegal_match, @matches[group]) ||
+      scores.each_with_index do |score, index|
+        while illegal_match = find_illegal_match(@matches[score])
+          raise UnmatchableRound unless swap_with_group(illegal_match, @matches[score]) ||
             (index + 1 < scores.size && swap_with_group(illegal_match, @matches[scores[index + 1]])) ||
             swap_with_group(illegal_match, @matches[scores[index - 1]])
         end
