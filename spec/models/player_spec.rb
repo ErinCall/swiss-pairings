@@ -40,4 +40,238 @@ describe Player do
       subject.played?(subject).should be_false
     end
   end
+
+  describe '#opponents' do
+    subject { Factory.create(:player, name: 'subject') }
+    let(:opponent) { Factory.create(:player, tournament: subject.tournament, name: 'opponent') }
+    let(:bye_guy)  { Factory.create(:player, tournament: subject.tournament, name: 'bye guy') }
+
+    it 'should return a list of past opponents' do
+        Factory.create(:match, tournament: subject.tournament, player_1: subject, player_2: opponent);
+
+        subject.opponents.should == [ opponent ]
+    end
+  end
+
+  describe '#match_win_percentage' do
+    subject { Factory.create(:player, name: 'subject') }
+    let(:opponent)  { Factory.create(:player, tournament: subject.tournament, name: 'opponent') }
+
+    it 'should return the percentage of matches won' do
+      Factory.create(:match, tournament: subject.tournament,
+        player_1: subject,
+        player_2: opponent,
+        player_1_wins: 2,
+      );
+
+      Factory.create(:match, tournament: subject.tournament,
+        player_1: subject,
+        player_2: opponent,
+        player_2_wins: 2,
+      );
+
+      Factory.create(:match, tournament: subject.tournament,
+        player_1: subject,
+        player_2: opponent,
+        player_1_wins: 2,
+      );
+
+      subject.match_win_percentage.should == (2.0/3);
+    end
+
+    it 'should be affected by drawn matches' do
+      Factory.create(:match, tournament: subject.tournament, player_1: subject, player_2: opponent, player_1_wins: 2,);
+      Factory.create(:match, tournament: subject.tournament, player_1: subject, player_2: opponent, player_2_wins: 2,);
+
+      Factory.create(:match, tournament: subject.tournament,
+        player_1: subject,
+        player_2: opponent,
+        player_1_wins: 1,
+        player_2_wins: 1,
+        draws: 1,
+      );
+
+      subject.match_win_percentage.should == (3.0+1)/(3*3);
+    end
+
+    it 'should return zero if no matches have been played' do
+      subject.match_win_percentage.should == (0.0);
+    end
+
+    it 'should never be less than 0.33' do
+      Factory.create(:match, tournament: subject.tournament,
+        player_1: subject,
+        player_2: opponent,
+        player_2_wins: 1
+      )
+
+      subject.match_win_percentage.should == (0.33);
+    end
+  end
+
+  describe '#opponents_match_win_percentage' do
+    subject { Factory.create(:player, name: 'subject') }
+    let(:opponent1)  { Factory.create(:player, tournament: subject.tournament, name: 'opponent1') }
+    let(:opponent2)  { Factory.create(:player, tournament: subject.tournament, name: 'opponent2') }
+
+    it 'should return zero if no matches have been played' do
+      subject.opponents_match_win_percentage.should == (0.0);
+    end
+
+    it "should return the average of all opponents' match-win-percentage" do
+      Factory.create(:match, tournament: subject.tournament, player_1: subject, player_2: opponent1)
+      Factory.create(:match, tournament: subject.tournament, player_1: subject, player_2: opponent2)
+      
+      opponent1.stub(:match_win_percentage) { 0.7 }
+      opponent2.stub(:match_win_percentage) { 0.4 }
+
+      subject.opponents_match_win_percentage.should == ((0.7+0.4)/2)
+    end
+  end
+
+  describe '#game_win_percentage' do
+    subject        { Factory.create(:player, name: 'subject') }
+    let(:opponent) { Factory.create(:player, name: 'opponent', tournament: subject.tournament) }
+
+    it 'should return zero if no matches have been played' do
+      subject.game_win_percentage.should == (0.0);
+    end
+
+    it 'should equal the number of points earned divided by three times the number of matches' do
+      Factory.create(:match, tournament: subject.tournament, player_1: subject, player_2: opponent,
+        player_1_wins: 2,
+        player_2_wins: 1,
+      )
+      Factory.create(:match, tournament: subject.tournament, player_1: subject, player_2: opponent,
+        player_1_wins: 1,
+        player_2_wins: 1,
+        draws: 1,
+      )
+
+      subject.game_win_percentage.should == (6.0+3.0+1)/(3*6)
+    end
+  end
+
+  describe '#opponents_game_win_percentage' do
+    subject        { Factory.create(:player, name: 'subject') }
+
+    it 'should return zero if no matches have been played' do
+      subject.opponents_game_win_percentage.should == (0.0);
+    end
+
+    it "should be the average of all a players' opponents' game-win-percentages" do
+      alice = Factory.create(:player, name: 'Alice', tournament: subject.tournament)
+      brent = Factory.create(:player, name: 'Brent', tournament: subject.tournament)
+
+      Factory.create(:match, tournament: subject.tournament, player_1: subject, player_2: alice,
+        player_2_wins: 2,
+        draws: 1,
+      )
+      Factory.create(:match, tournament: subject.tournament, player_1: subject, player_2: brent,
+        player_1_wins: 1,
+        player_2_wins: 2,
+      )
+
+      #sanity check
+      brent.game_win_percentage.should == (6.0/(3*3)) # 2/3
+      alice.game_win_percentage.should == (7.0/(3*3)) # 7/9
+
+      subject.opponents_game_win_percentage.should == ((2.0/3)+(7.0/9))/2
+    end
+
+    it "should be 0.33 at minimum" do
+      alice = Factory.create(:player, name: 'Alice', tournament: subject.tournament)
+      brent = Factory.create(:player, name: 'Brent', tournament: subject.tournament)
+
+      Factory.create(:match, tournament: subject.tournament, player_1: subject, player_2: alice,
+        player_1_wins: 2,
+      )
+
+      subject.opponents_game_win_percentage.should == 0.33
+    end
+  end
+
+  describe '#<=>' do
+    let(:tournament) { Factory.create(:tournament) }
+
+    it 'should compare based on match_score' do
+      winner = Factory.create(:player, tournament: tournament)
+      loser = Factory.create(:player, tournament: tournament)
+
+      Factory.create(:match,
+        tournament: tournament,
+        player_1: winner,
+        player_2: loser,
+        player_1_wins: 1,
+      )
+
+      winner.<=>(loser).should == 1
+      loser.<=>(winner).should == -1
+      winner.<=>(winner).should == 0
+    end
+
+    it "should break match-score ties with opponents' match-score" do
+      close_runner_up = Factory.create(:player, tournament: tournament, name: 'close_runner_up')
+      overall_winner  = Factory.create(:player, tournament: tournament, name: 'overall_winner')
+      strong_opponent = Factory.create(:player, tournament: tournament, name: 'strong_opponent')
+      weaker_opponent = Factory.create(:player, tournament: tournament, name: 'weaker_opponent')
+
+      close_runner_up.stub(:match_score) { 5 }
+      overall_winner.stub(:match_score)  { 5 }
+      strong_opponent.stub(:match_score) { 3 }
+      weaker_opponent.stub(:match_score) { 2 }
+
+      overall_winner.stub(:opponents) { [ strong_opponent ] }
+      close_runner_up.stub(:opponents) { [ weaker_opponent ] }
+
+      strong_opponent.stub(:match_win_percentage) { 0.75 }
+      weaker_opponent.stub(:match_win_percentage) { 0.25 }
+
+      overall_winner.<=>(close_runner_up).should == 1
+    end
+
+    it "should break opponents' match-score ties with game-win percentage" do
+      winner = Factory.create(:player, tournament: tournament, name: 'winner by a hair')
+      loser = Factory.create(:player, tournament: tournament, name: 'loser by a hair')
+
+      Factory.create(:match, tournament: tournament,
+        player_1: winner,
+        player_2: loser,
+        player_1_wins: 2,
+        player_2_wins: 0,
+      )
+      Factory.create(:match,
+        tournament: tournament,
+        player_1: winner,
+        player_2: loser,
+        player_1_wins: 1,
+        player_2_wins: 2,
+      )
+
+      winner.<=>(loser).should == 1
+    end
+
+    it "should break game-win-percentage ties with opponents' game-win-percentage" do
+      close_runner_up = Factory.create(:player, tournament: tournament, name: 'close_runner_up')
+      overall_winner  = Factory.create(:player, tournament: tournament, name: 'overall_winner')
+      strong_opponent = Factory.create(:player, tournament: tournament, name: 'strong_opponent')
+      weaker_opponent = Factory.create(:player, tournament: tournament, name: 'weaker_opponent')
+
+      close_runner_up.stub(:match_score) { 5 }
+      overall_winner.stub(:match_score)  { 5 }
+      strong_opponent.stub(:match_score) { 3 }
+      weaker_opponent.stub(:match_score) { 2 }
+
+      overall_winner.stub(:opponents) { [ strong_opponent ] }
+      close_runner_up.stub(:opponents) { [ weaker_opponent ] }
+
+      strong_opponent.stub(:match_win_percentage) { 0.75 }
+      weaker_opponent.stub(:match_win_percentage) { 0.75 }
+
+      strong_opponent.stub(:game_win_percentage) { 0.75 }
+      weaker_opponent.stub(:game_win_percentage) { 0.25 }
+
+      overall_winner.<=>(close_runner_up).should == 1
+    end
+  end
 end

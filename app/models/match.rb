@@ -58,4 +58,18 @@ class Match
   def bye?
     ! player_2_id
   end
+
+  def games_played
+    player_1_wins + player_2_wins + draws
+  end
+
+  def game_score(player)
+    if player_1_id == player.id
+      return 3 * self.player_1_wins + self.draws
+    elsif player_2_id == player.id
+      return 3 * self.player_2_wins + self.draws
+    else
+      return 0
+    end
+  end
 end
