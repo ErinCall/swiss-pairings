@@ -22,6 +22,7 @@ class Player
   end
 
   def played?(other_player)
+    return false if other_player == self
     !! tournament.matches_for_player(self).find do |m|
       m.player_1_id == other_player.id || m.player_2_id == other_player.id
     end

@@ -34,5 +34,10 @@ describe Player do
     it 'should return false when a player has not played another player' do
       subject.played?(other_player).should be_false
     end
+
+    it 'should return false when passed itself' do 
+      Factory.create(:match, tournament: subject.tournament, player_1: subject, player_2: other_player)
+      subject.played?(subject).should be_false
+    end
   end
 end
