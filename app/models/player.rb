@@ -8,17 +8,15 @@ class Player
   validates_presence_of :name
 
   def match_score
-    score = 0
-
-    tournament.matches_for_player(self).each do |match|
+    tournament.matches_for_player(self).reduce(0) do |score, match|
       if match.winner?(self)
-        score += tournament.win_value
+        score + tournament.win_value
       elsif match.draw?
-        score += tournament.draw_value
+        score + tournament.draw_value
+      else
+        score
       end
     end
-
-    score
   end
 
   def played?(other_player)
