@@ -20,7 +20,7 @@ class SwissPairer
 
       scores.each_with_index do |group, index|
         if groups[group].length.odd? && index < scores.length - 1
-          groups[group] << promote_random_player_from_group(groups, scores[index + 1])
+          groups[group] << promote_random_player_from_group(groups[scores[index + 1]])
         end
 
         groups[group].sort_by { rand }.each_slice(2) do |pair|
@@ -47,8 +47,8 @@ class SwissPairer
       end
     end
 
-    def promote_random_player_from_group(groups, group)
-      groups[group].delete_at(rand(groups[group].length))
+    def promote_random_player_from_group(group)
+      group.delete_at(rand(group.length))
     end
 
     def find_illegal_match(matches)
@@ -64,7 +64,7 @@ class SwissPairer
     end
 
     def swap_if_possible(m1, m2)
-      return nil if m1 == m2
+      return false if m1 == m2
 
       if !played?(m1[0], m2[0]) && !played?(m1[1], m2[1])
         m1[1], m2[0] = m2[0], m1[1]
@@ -73,7 +73,7 @@ class SwissPairer
         m1[1], m2[1] = m2[1], m1[1]
         true
       else
-        nil
+        false
       end
     end
 
