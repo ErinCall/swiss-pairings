@@ -1,0 +1,8 @@
+- page_title 'Tournaments'
+- @tournaments = Tournament.all.sort_by {|t| t.name}.reverse
+
+%ul
+  - @tournaments.each do |tournament|
+    %li
+      = link_to tournament.name, tournament_path(tournament)
+      (#{tournament.players.count} player#{tournament.players.count > 1 ? 's' : ''})
