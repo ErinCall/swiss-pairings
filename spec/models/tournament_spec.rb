@@ -60,24 +60,49 @@ describe Tournament do
   end
 
   describe '#finished_rounds' do
-    it 'should return the number of rounds for which all matches are finished' do
-      tournament = Factory.create(:tournament, current_round: 1)
-      players = 5.times.map { Factory.create(:player) }
+    let(:subject) { Factory.create(:tournament, current_round: 1) }
+    let(:players) { 3.times.map { Factory.create(:player, tournament: subject) } }
+    it 'should return the current round, less one, if there are unfinished matches' do
+      subject.matches.create(round: 1, player_1: players[0], player_2: players[1])
+      subject.matches.create(round: 1, player_1: players[2])
 
-      #unfinished matches
-      tournament.matches.create(round: 1, player_1: players[0], player_2: players[1])
-      tournament.matches.create(round: 1, player_1: players[2], player_2: players[3])
-      tournament.matches.create(round: 1, player_1: players[4])
+      subject.finished_rounds.should == 0
+    end
 
-      tournament.finished_rounds.should == 0
+    it 'should return the current round if all matches are finished' do
+      subject.matches.create(winner: 1, round: 2, player_1: players[0], player_2: players[1])
+      subject.matches.create(round: 2, player_1: players[2])
 
-      #handwave that round, skip to the next: all matches finished up
+      subject.finished_rounds.should == 1
+    end
+  end
+
+  describe '#finished?' do
+    let(:tournament) { Factory.create(:tournament, current_round: 1, total_rounds: 2) }
+    it 'should be false if there are unfinished rounds' do
+      tournament.finished?.should be_false
+
+    end
+    it 'should be true if all rounds are finished' do
       tournament.next_round
-      tournament.matches.create(winner: 1, round: 2, player_1: players[0], player_2: players[1])
-      tournament.matches.create(winner: 1, round: 2, player_1: players[2], player_2: players[3])
-      tournament.matches.create(round: 2, player_1: players[4])
+      tournament.finished?.should be_true
+    end
+  end
 
-      tournament.finished_rounds.should == 2
+  describe '#underway?' do
+    let(:tournament) { Factory.create(:tournament, current_round: 0, total_rounds: 2) }
+    it "should be false if the tournament hasn't started" do
+      tournament.underway?.should be_false
+    end
+
+    it "should be true if the tournament has started but there are unfinished rounds" do
+      tournament.next_round
+      tournament.underway?.should be_true
+    end
+
+    it "should be false if the tournament has finished" do
+      2.times {tournament.next_round}
+      tournament.underway?.should be_false
     end
   end
 
@@ -135,6 +160,17 @@ describe Tournament do
       tournament.next_round
 
       tournament.current_round.should == 2
+    end
+  end
+
+  describe '#results' do
+    let(:subject) { Factory.create(:tournament, current_round:2, total_rounds: 2) }
+
+    it 'should return the players in results order' do
+      players = 4.times.map { Factory.create(:player, tournament: subject) }
+      players.each_with_index { |player, index| player.stub(:match_score) {index} }
+
+    subject.results.should == players.reverse
     end
   end
 end

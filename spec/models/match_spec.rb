@@ -86,6 +86,49 @@ describe Match do
     end
   end
 
+  describe '#games_played' do
+    let(:player) { Factory.create(:player) }
+    subject { match = Factory.create(:match, tournament: player.tournament, player_1: player) }
+    
+    it "should account for player 1's wins" do
+      subject.update_attributes(player_1_wins: 1) 
+      subject.games_played.should == 1
+    end
+
+    it 'should account for draws' do
+      subject.update_attributes(draws: 1) 
+      subject.games_played.should == 1
+    end
+
+    it "should account for player 2's wins" do
+      subject.update_attributes(player_2_wins: 2) 
+      subject.games_played.should == 2
+    end
+  end
+
+  describe '#game_score' do
+    let(:player_one) { Factory.create(:player) }
+    let(:player_two) { Factory.create(:player) }
+    subject { match = Factory.create(:match, tournament: player_one.tournament, player_1: player_one, player_2: player_two) }
+
+    it "should account for player one's wins" do
+      subject.update_attributes(player_1_wins: 2)
+      subject.game_score(player_one).should == 2*3
+    end
+
+    it "should account for player two's wins" do
+      subject.update_attributes(player_2_wins: 1)
+      subject.game_score(player_two).should == 1*3
+    end
+
+    it "should count draws for both players" do
+      subject.update_attributes(draws: 1)
+
+      subject.game_score(player_one).should == 1
+      subject.game_score(player_two).should == 1
+    end
+  end
+
   describe 'before save' do
     subject { Factory.create(:match) }
 

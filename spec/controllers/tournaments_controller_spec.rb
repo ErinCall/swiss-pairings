@@ -75,6 +75,12 @@ describe TournamentsController do
 
         post :start_round, id: 'foo'
       end
+
+      it 'should not build new players once the tournament is underway' do
+        tournament.players.should_not_receive(:build)
+
+        get :show, id: 'foo'
+      end
     end
   end
 end

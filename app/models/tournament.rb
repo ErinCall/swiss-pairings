@@ -39,6 +39,14 @@ class Tournament
     end
   end
 
+  def finished?
+    finished_rounds == total_rounds
+  end
+
+  def underway?
+    started? && ! finished?
+  end
+
   def matches_for_player(player)
     matches.select { |m| m.player_1_id == player.id || m.player_2_id == player.id }
   end
@@ -49,6 +57,10 @@ class Tournament
 
   def next_round
     inc(:current_round, 1)
+  end
+
+  def results
+    self.players.sort.reverse
   end
 
   private

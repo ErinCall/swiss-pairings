@@ -1,6 +1,6 @@
 class TournamentsController < InheritedResources::Base
   def show
-    @player = resource.players.build
+    @player = resource.players.build unless resource.started?
 
     show!
   end

@@ -1,0 +1,6 @@
+%h2= "Round #{@tournament.current_round} of #{@tournament.total_rounds}"
+#matches
+  = render @tournament.current_matches
+
+- if @tournament.unfinished_matches.count == 0 && @tournament.current_round < @tournament.total_rounds
+  = button_to 'Start Next Round', start_round_tournament_path(@tournament)
