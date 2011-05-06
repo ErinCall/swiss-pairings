@@ -162,4 +162,15 @@ describe Tournament do
       tournament.current_round.should == 2
     end
   end
+
+  describe '#results' do
+    let(:subject) { Factory.create(:tournament, current_round:2, total_rounds: 2) }
+
+    it 'should return the players in results order' do
+      players = 4.times.map { Factory.create(:player, tournament: subject) }
+      players.each_with_index { |player, index| player.stub(:match_score) {index} }
+
+    subject.results.should == players.reverse
+    end
+  end
 end

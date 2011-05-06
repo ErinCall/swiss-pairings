@@ -25,8 +25,4 @@ module TournamentsHelper
 
     return status
   end
-
-  def tournament_results(tournament)
-    tournament.players.sort.reverse
-  end
 end

@@ -59,6 +59,10 @@ class Tournament
     inc(:current_round, 1)
   end
 
+  def results
+    self.players.sort.reverse
+  end
+
   private
     def swiss_pairer
       SwissPairer.new(self)
