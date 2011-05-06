@@ -14,12 +14,11 @@ Feature: Display tournaments
     And I should see "Sealed"
     And I should see "Invitational"
 
-#I wonder if there is a more robust way to express "I should be on the tournament info page"?
   Scenario: Drill into a tournament
     Given a tournament exists with name: "Sealed"
     And I am on the tournaments page
     When I follow "Sealed"
-    Then I should see "Tournament Info"
+    Then I should be on the tournament's page
 
   Scenario: See how many players are in a tournament
     Given a tournament exists
