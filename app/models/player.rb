@@ -7,6 +7,8 @@ class Player
 
   validates_presence_of :name
 
+  Minimum_win_percentage = 0.33
+
   def match_score
     tournament.matches_for_player(self).reduce(0) do |score, match|
       if match.winner?(self)
@@ -23,9 +25,9 @@ class Player
     matches = tournament.matches_for_player(self)
     return 0 if matches.length == 0
 
-    actual_percentage = self.match_score/(3 * matches.length)
-    return actual_percentage unless actual_percentage < 0.33
-    return 0.33
+    actual_percentage = self.match_score/(tournament.win_value * matches.length)
+    return actual_percentage unless actual_percentage < Minimum_win_percentage
+    return Minimum_win_percentage
   end
 
   def opponents_match_win_percentage
@@ -51,7 +53,7 @@ class Player
       game_score += match.game_score(self)
     end
 
-    game_score / (3 * games_played)
+    game_score / (tournament.win_value * games_played)
   end
 
   def opponents_game_win_percentage
@@ -60,7 +62,7 @@ class Player
 
     total_percentage = opponents.reduce(0) do |sum, opponent|
       percentage = opponent.game_win_percentage
-      percentage = 0.33 unless percentage > 0.33
+      percentage = Minimum_win_percentage unless percentage > Minimum_win_percentage
       sum + percentage
     end
 
