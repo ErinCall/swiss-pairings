@@ -31,6 +31,14 @@ class Tournament
     current_matches.where(winner: nil, :player_2_id.ne => nil)
   end
 
+  def finished_rounds
+    if unfinished_matches.length > 0
+      current_round - 1
+    else
+      current_round
+    end
+  end
+
   def matches_for_player(player)
     matches.select { |m| m.player_1_id == player.id || m.player_2_id == player.id }
   end

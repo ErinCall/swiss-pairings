@@ -43,5 +43,17 @@ describe TournamentsHelper do
 
       tournament_status(subject).should == '4 players'
     end
+    
+    it 'should list the number of completed and total matches, if any are completed' do
+      subject = Factory.create(:tournament, current_round: 3, total_rounds: 4)
+      tournament_status(subject).should == '; 3 of 4 rounds complete'
+    end
+
+    it 'should list both players and matches' do
+      subject = Factory.create(:tournament, current_round: 1, total_rounds: 2)
+      4.times { Factory.create(:player, tournament: subject) }
+
+      tournament_status(subject).should == '4 players; 1 of 2 rounds complete'
+    end
   end
 end

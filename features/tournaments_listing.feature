@@ -37,3 +37,8 @@ Feature: Display tournaments
       | Kane |
     And I am on the tournaments page
     Then I should see "(1 player)"
+
+  Scenario: Tournaments that have started should list the complete and total number of rounds
+    Given a tournament exists with current_round: 2, total_rounds: 3
+    And I am on the tournaments page
+    Then I should see "; 2 of 3 rounds complete)"
