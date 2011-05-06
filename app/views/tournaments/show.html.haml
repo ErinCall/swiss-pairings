@@ -6,26 +6,9 @@
   = t.attribute :draw_value
 
 - if ! @tournament.started?
-  %h2 Register Players
-  %div
-    %ol#players
-      = render @tournament.players[0..-2]
-
-    = simple_form_for [@tournament, @player] do |f|
-      = f.input :name
-      %div= f.submit 'Add Player'
-
-  = button_to 'Start Tournament', start_round_tournament_path(@tournament)
+  = render :partial => 'registration'
 - elsif @tournament.underway?
-  %h2= "Round #{@tournament.current_round} of #{@tournament.total_rounds}"
-  #matches
-    = render @tournament.current_matches
-
-  - if @tournament.unfinished_matches.count == 0 && @tournament.current_round < @tournament.total_rounds
-    = button_to 'Start Next Round', start_round_tournament_path(@tournament)
-
+  = render :partial => 'underway'
 - elsif @tournament.finished?
   %h2 Results:
-  %ol
-    - tournament_results(@tournament).each do |player|
-      %li= player.name
+  = render :partial => 'standings'

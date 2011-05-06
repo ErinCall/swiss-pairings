@@ -1,0 +1,10 @@
+%h2 Register Players
+%div
+  %ol#players
+    = render @tournament.players[0..-2]
+
+  = simple_form_for [@tournament, @player] do |f|
+    = f.input :name
+    %div= f.submit 'Add Player'
+
+= button_to 'Start Tournament', start_round_tournament_path(@tournament)
