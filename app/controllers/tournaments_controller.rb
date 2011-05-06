@@ -16,4 +16,9 @@ class TournamentsController < InheritedResources::Base
 
     redirect_to tournament_path(@tournament)
   end
+
+  protected
+    def collection
+      @tournaments ||= Tournament.asc(:created_at)
+    end
 end

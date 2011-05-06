@@ -1,0 +1,7 @@
+- page_title 'Tournaments'
+
+%ul
+  - @tournaments.each do |tournament|
+    %li
+      = link_to tournament.name, tournament_path(tournament)
+      (#{tournament_status(tournament)})
