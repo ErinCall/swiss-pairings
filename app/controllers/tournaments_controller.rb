@@ -19,6 +19,6 @@ class TournamentsController < InheritedResources::Base
 
   protected
     def collection
-      @tournaments ||= Tournament.desc(:name)
+      @tournaments ||= Tournament.asc(:created_at)
     end
 end
