@@ -26,4 +26,22 @@ describe TournamentsHelper do
       helper.result_class(match, 1).should be_nil
     end
   end
+
+  describe '#tournament_status' do
+    let(:tournament) { Factory.build(:tournament) }
+
+    it 'should return an empty string if there are no players' do
+      tournament_status(tournament).should == ''
+    end
+    
+    it 'should list the number of players' do
+      subject = tournament
+      Factory.create(:player, tournament: subject)
+      tournament_status(subject).should == '1 player'
+
+      3.times { Factory.create(:player, tournament: subject) }
+
+      tournament_status(subject).should == '4 players'
+    end
+  end
 end

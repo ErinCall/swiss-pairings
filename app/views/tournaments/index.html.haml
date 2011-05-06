@@ -5,4 +5,4 @@
   - @tournaments.each do |tournament|
     %li
       = link_to tournament.name, tournament_path(tournament)
-      (#{tournament.players.count} player#{tournament.players.count > 1 ? 's' : ''})
+      (#{tournament_status(tournament)})

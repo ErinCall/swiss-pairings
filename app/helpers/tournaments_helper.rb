@@ -12,4 +12,12 @@ module TournamentsHelper
       nil
     end
   end
+
+  def tournament_status(tournament)
+    if tournament.players.count > 0
+      pluralize(tournament.players.count, 'player')
+    else
+      ''
+    end
+  end
 end
