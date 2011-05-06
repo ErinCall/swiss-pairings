@@ -14,10 +14,7 @@ module TournamentsHelper
   end
 
   def tournament_status(tournament)
-    status = ''
-    if tournament.players.count > 0
-      status = pluralize(tournament.players.count, 'player')
-    end
+    status = pluralize(tournament.players.count, 'player')
 
     if tournament.finished_rounds > 0
       status << "; #{tournament.finished_rounds} of #{tournament.total_rounds} rounds complete"

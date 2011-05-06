@@ -30,8 +30,8 @@ describe TournamentsHelper do
   describe '#tournament_status' do
     let(:tournament) { Factory.build(:tournament) }
 
-    it 'should return an empty string if there are no players' do
-      tournament_status(tournament).should == ''
+    it 'should return an informative string if there are no players' do
+      tournament_status(tournament).should == '0 players'
     end
     
     it 'should list the number of players' do
@@ -46,7 +46,7 @@ describe TournamentsHelper do
     
     it 'should list the number of completed and total matches, if any are completed' do
       subject = Factory.create(:tournament, current_round: 3, total_rounds: 4)
-      tournament_status(subject).should == '; 3 of 4 rounds complete'
+      tournament_status(subject).should == '0 players; 3 of 4 rounds complete'
     end
 
     it 'should list both players and matches' do
