@@ -1,5 +1,6 @@
 class Player
   include Mongoid::Document
+  extend ActiveSupport::Memoizable
 
   field :name
 
@@ -28,6 +29,7 @@ class Player
     actual_percentage = self.match_score/(tournament.win_value * matches.length)
     [actual_percentage, MINIMUM_WIN_PERCENTAGE].max
   end
+  memoize :match_win_percentage
 
   def opponents_match_win_percentage
     opponents = self.opponents
@@ -39,6 +41,7 @@ class Player
 
     return total_percentage / opponents.length
   end
+  memoize :opponents_match_win_percentage
 
   def game_win_percentage
     matches = tournament.matches_for_player(self)
@@ -54,6 +57,7 @@ class Player
 
     game_score / (tournament.win_value * games_played)
   end
+  memoize :game_win_percentage
 
   def opponents_game_win_percentage
     opponents = self.opponents
@@ -65,6 +69,7 @@ class Player
 
     return total_percentage / opponents.length
   end
+  memoize :opponents_game_win_percentage
 
   def played?(other_player)
     return false if other_player == self
