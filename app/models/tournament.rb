@@ -60,7 +60,14 @@ class Tournament
   end
 
   def results
-    self.players.sort.reverse
+    self.players.sort_by do |p|
+      [
+        p.match_score,
+        p.opponents_match_win_percentage,
+        p.game_win_percentage,
+        p.opponents_game_win_percentage
+      ]
+    end.reverse
   end
 
   private
